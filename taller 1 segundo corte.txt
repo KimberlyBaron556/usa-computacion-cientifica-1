@@ -1,0 +1,37 @@
+import matplotlib.pyplot as plt
+import random
+
+def simulacion_embarque(n_experimentos):
+  asiento_para_100 = []
+
+  for _ in range(n_experimentos):
+    asientos = list(range(1, 101))
+    ocupado = [False] * 100
+    asientos_pasajeros = {}
+
+    asiento_primer_pasajero = random.randint(0, 99)
+    ocupado[asiento_primer_pasajero] = True
+    asientos_pasajeros[1] = asientos[asiento_primer_pasajero]
+
+    for pasageros in range(2, 101):
+      if not ocupado[pasageros - 1]:
+        ocupado[pasageros-1] = True
+        asientos_pasajeros[pasageros] = asientos[pasageros-1]
+      else:
+          asiento_disponible = [i for i in range(100) if not ocupado[i]]
+          asiento_elegido = random.choice(asiento_disponible)
+          ocupado[asiento_elegido] = True
+          asientos_pasajeros[pasageros] = asientos[asiento_elegido]
+
+    asiento_para_100.append(asientos_pasajeros[100])
+
+  return asiento_para_100
+
+n_experimentos = 1000000
+asientos_asignados = simulacion_embarque(n_experimentos)
+
+plt.hist(asientos_asignados, bins=100, density=True )
+plt.xlabel("Asiento asignado al pasajero 100")
+plt.ylabel("Frecuencia")
+plt.title(f"Asientos del pasajero 100 en {n_experimentos} experimentos")
+plt.show()
